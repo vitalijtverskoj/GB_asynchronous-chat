@@ -119,7 +119,6 @@ def main():
                                 f'отключился от сервера.')
                     clients.remove(client_with_message)
 
-        # Если есть сообщения для отправки и ожидающие клиенты, отправляем им сообщение.
         if messages and send_data_lst:
             message = {
                 ACTION: MESSAGE,
