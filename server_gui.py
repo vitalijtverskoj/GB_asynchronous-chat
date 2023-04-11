@@ -71,7 +71,6 @@ class MainWindow(QMainWindow):
         self.show_history_button = QAction('История клиентов', self)
 
         # Статусбар
-        # dock widget
         self.statusBar()
 
         # Тулбар
@@ -157,6 +156,7 @@ class ConfigWindow(QDialog):
             dialog = QFileDialog(self)
             path = dialog.getExistingDirectory()
             path = path.replace('/', '\\')
+            self.db_path.clear()
             self.db_path.insert(path)
 
         self.db_path_select.clicked.connect(open_file_dialog)
@@ -200,7 +200,7 @@ class ConfigWindow(QDialog):
         self.save_btn = QPushButton('Сохранить' , self)
         self.save_btn.move(190 , 220)
 
-        # Кнапка закрытия окна
+        # Кнопка закрытия окна
         self.close_button = QPushButton('Закрыть', self)
         self.close_button.move(275, 220)
         self.close_button.clicked.connect(self.close)
