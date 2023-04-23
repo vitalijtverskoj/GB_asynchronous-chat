@@ -37,7 +37,7 @@ def arg_parser(default_port, default_address):
 def config_load():
     '''Парсер конфигурационного ini файла.'''
     config = configparser.ConfigParser()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.getcwd()
     config.read(f"{dir_path}/{'server.ini'}")
     # Если конфиг файл загружен правильно, запускаемся, иначе конфиг по умолчанию.
     if 'SETTINGS' in config:
@@ -92,7 +92,7 @@ def main():
         main_window = MainWindow(database, server, config)
 
         # Запускаем GUI
-        server_app.exec_()
+        sys.exit(server_app.exec_())
 
         # По закрытию окон останавливаем обработчик сообщений
         server.running = False

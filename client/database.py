@@ -3,6 +3,7 @@ from sqlalchemy.orm import mapper, sessionmaker
 from common.variables import *
 import datetime
 import os
+from sqlalchemy.sql import default_comparator
 
 
 

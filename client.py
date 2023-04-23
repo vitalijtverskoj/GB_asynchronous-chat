@@ -3,7 +3,7 @@ import argparse
 import logging
 import logs.config_client_log
 import os
-from Cryptodome.PublicKey import RSA
+from Crypto.PublicKey import RSA
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from common.variables import *
@@ -42,7 +42,7 @@ def arg_parser():
     if not 1023 < server_port < 65536:
         logger.critical(
             f'Попытка запуска клиента с неподходящим номером порта: {server_port}. Допустимы адреса с 1024 до 65535. Клиент завершается.')
-        exit(1)
+        sys.exit(1)
 
     return server_address, server_port, client_name, client_passwd
 
@@ -51,7 +51,6 @@ def arg_parser():
 if __name__ == '__main__':
     # Загружаем параметы коммандной строки
     server_address, server_port, client_name, client_passwd = arg_parser()
-    logger.debug('Args loaded')
 
     # Создаём клиентокое приложение
     client_app = QApplication(sys.argv)
@@ -65,16 +64,15 @@ if __name__ == '__main__':
         if start_dialog.ok_pressed:
             client_name = start_dialog.client_name.text()
             client_passwd = start_dialog.client_passwd.text()
-            logger.debug(f'Using USERNAME = {client_name}, PASSWD = {client_passwd}.')
         else:
-            exit(0)
+            sys.exit(0)
 
     # Записываем логи
     logger.info(
         f'Запущен клиент с парамертами: адрес сервера: {server_address} , порт: {server_port}, имя пользователя: {client_name}')
 
     # Загружаем ключи с файла, если же файла нет, то генерируем новую пару.
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.getcwd()
     key_file = os.path.join(dir_path, f'{client_name}.key')
     if not os.path.exists(key_file):
         keys = RSA.generate(2048, os.urandom)
@@ -84,8 +82,7 @@ if __name__ == '__main__':
         with open(key_file, 'rb') as key:
             keys = RSA.import_key(key.read())
 
-    #!!!keys.publickey().export_key()
-    logger.debug("Keys sucsessfully loaded.")
+    keys.publickey().export_key()
 
     # Создаём объект базы данных
     database = ClientDatabase(client_name)
@@ -99,11 +96,10 @@ if __name__ == '__main__':
             client_name,
             client_passwd,
             keys)
-        logger.debug("Transport ready.")
     except ServerError as error:
         message = QMessageBox()
         message.critical(start_dialog, 'Ошибка сервера', error.text)
-        exit(1)
+        sys.exit(1)
     transport.setDaemon(True)
     transport.start()
     

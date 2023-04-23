@@ -95,7 +95,6 @@ class ClientTransport(threading.Thread, QObject):
         passwd_hash = hashlib.pbkdf2_hmac('sha512', passwd_bytes, salt, 10000)
         passwd_hash_string = binascii.hexlify(passwd_hash)
 
-        logger.debug(f'Passwd hash ready: {passwd_hash_string}')
 
         # Получаем публичный ключ и декодируем его из байтов
         pubkey = self.keys.publickey().export_key().decode('ascii')
@@ -110,12 +109,10 @@ class ClientTransport(threading.Thread, QObject):
                     PUBLIC_KEY: pubkey
                 }
             }
-            logger.debug(f"Presense message = {presense}")
             # Отправляем серверу приветственное сообщение.
             try:
                 send_message(self.transport, presense)
                 ans = get_message(self.transport)
-                logger.debug(f'Server response = {ans}.')
                 # Если сервер вернул ошибку, бросаем исключение.
                 if RESPONSE in ans:
                     if ans[RESPONSE] == 400:
@@ -132,7 +129,6 @@ class ClientTransport(threading.Thread, QObject):
                         send_message(self.transport, my_ans)
                         self.process_server_ans(get_message(self.transport))
             except (OSError, json.JSONDecodeError) as err:
-                logger.debug(f'Connection error.', exc_info=err)
                 raise ServerError('Сбой соединения в процессе авторизации.')
 
     def process_server_ans(self, message):
@@ -150,7 +146,7 @@ class ClientTransport(threading.Thread, QObject):
                 self.contacts_list_update()
                 self.message_205.emit()                
             else:
-                logger.debug(f'Принят неизвестный код подтверждения {message[RESPONSE]}')
+                logger.error(f'Принят неизвестный код подтверждения {message[RESPONSE]}')
 
         # Если это сообщение от пользователя добавляем в базу, даём сигнал о новом сообщении
         elif ACTION in message and message[ACTION] == MESSAGE and SENDER in message and DESTINATION in message \
