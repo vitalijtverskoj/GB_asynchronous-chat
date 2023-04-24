@@ -10,3 +10,8 @@ class ServerError(Exception):
 
     def __str__(self):
         return self.text
+
+# исключение - аргумент функции не словарь.
+class NonDictInputError(Exception):
+    def __str__(self):
+        return 'Аргумент функции должен быть словарём.'

@@ -69,7 +69,7 @@ class ServerStorage:
         users_table = Table('Users', self.metadata,
                             Column('id', Integer, primary_key=True),
                             Column('name', String, unique=True),
-                            Column('last_login', DateTime)
+                            Column('last_login', DateTime),
                             Column('passwd_hash', String),
                             Column('pubkey', Text)
                             )
