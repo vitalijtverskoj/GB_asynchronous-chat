@@ -1,0 +1,2 @@
+https://pypi.org/project/vitalijtverskoj-mess-client/0.2/
+https://pypi.org/project/vitalijtverskoj-mess-server/0.2/
